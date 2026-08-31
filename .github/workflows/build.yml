@@ -1,0 +1,39 @@
+name: build dlgmemor framework
+
+on:
+  push:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: macos-latest
+
+    steps:
+    - name: checkout code
+      uses: actions/checkout@v4
+
+    - name: select xcode version
+      run: sudo xcode-select -s /Applications/Xcode.app/Contents/Developer
+
+    - name: build dlgmemor target
+      run: |
+        xcodebuild build \
+          -project DLGMemor.xcodeproj \
+          -target DLGMemor \
+          -sdk iphoneos \
+          -configuration Release \
+          CODE_SIGNING_ALLOWED=NO \
+          CODE_SIGNING_REQUIRED=NO
+
+    - name: package build artifacts
+      run: |
+        mkdir -p output
+        cp -R build/Release-iphoneos/DLGMemor.framework output/
+        zip -r output/DLGMemor.framework.zip output/DLGMemor.framework
+
+    - name: upload artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: DLGMemor.framework
+        path: output/DLGMemor.framework.zip
