@@ -25,6 +25,7 @@ jobs:
           -scheme DLGMemor \
           -sdk iphoneos \
           -configuration Release \
+          IPHONEOS_DEPLOYMENT_TARGET=14.0 \
           CODE_SIGNING_ALLOWED=NO \
           CODE_SIGNING_REQUIRED=NO
 
