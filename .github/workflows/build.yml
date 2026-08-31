@@ -18,9 +18,11 @@ jobs:
 
     - name: build dlgmemor target
       run: |
+        WORKSPACE_PATH=$(find . -name "DLGMemor.xcworkspace" | head -n 1)
+        echo "found workspace at: $WORKSPACE_PATH"
         xcodebuild build \
-          -project DLGMemor.xcodeproj \
-          -target DLGMemor \
+          -workspace "$WORKSPACE_PATH" \
+          -scheme DLGMemor \
           -sdk iphoneos \
           -configuration Release \
           CODE_SIGNING_ALLOWED=NO \
@@ -28,9 +30,11 @@ jobs:
 
     - name: package build artifacts
       run: |
+        FRAMEWORK_PATH=$(find . -name "DLGMemor.framework" -type d | head -n 1)
         mkdir -p output
-        cp -R build/Release-iphoneos/DLGMemor.framework output/
-        zip -r output/DLGMemor.framework.zip output/DLGMemor.framework
+        cp -R "$FRAMEWORK_PATH" output/
+        cd output
+        zip -r DLGMemor.framework.zip DLGMemor.framework
 
     - name: upload artifact
       uses: actions/upload-artifact@v4
