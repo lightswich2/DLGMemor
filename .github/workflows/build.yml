@@ -29,14 +29,16 @@ jobs:
           IPHONEOS_DEPLOYMENT_TARGET=14.0 \
           CODE_SIGNING_ALLOWED=NO \
           CODE_SIGNING_REQUIRED=NO \
-          SUPPORTS_TEXT_BASED_API=NO
+          SUPPORTS_TEXT_BASED_API=NO \
+          EAGER_LINKING=NO \
+          MACH_O_TYPE=mh_dylib
 
     - name: package dylib artifact
       run: |
-        FRAMEWORK_PATH=$(find ./build -name "DLGMemor.framework" -type d | head -n 1)
+        # target the Products directory specifically to bypass EagerLinkingTBDs
+        FRAMEWORK_PATH=$(find ./build/Build/Products -name "DLGMemor.framework" -type d | head -n 1)
         echo "found framework at: $FRAMEWORK_PATH"
         
-        # grab the executable binary inside the framework and save it as a .dylib
         mkdir -p output
         cp "$FRAMEWORK_PATH/DLGMemor" output/DLGMemor.dylib
         
