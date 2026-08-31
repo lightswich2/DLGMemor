@@ -25,13 +25,15 @@ jobs:
           -scheme DLGMemor \
           -sdk iphoneos \
           -configuration Release \
+          -derivedDataPath ./build \
           IPHONEOS_DEPLOYMENT_TARGET=14.0 \
           CODE_SIGNING_ALLOWED=NO \
           CODE_SIGNING_REQUIRED=NO
 
     - name: package build artifacts
       run: |
-        FRAMEWORK_PATH=$(find . -name "DLGMemor.framework" -type d | head -n 1)
+        FRAMEWORK_PATH=$(find ./build -name "DLGMemor.framework" -type d | head -n 1)
+        echo "found framework at: $FRAMEWORK_PATH"
         mkdir -p output
         cp -R "$FRAMEWORK_PATH" output/
         cd output
